@@ -1,0 +1,240 @@
+PYTHON
+======
+
+Checking for equality
+- is checks for object identity.
+- = checks for equality. For classes, this calls __eq__
+- Note that __neq__ is not automatically implemented if you implement __eq__!
+
+Copying objects
+- copy.copy: shallow copy. copy the parent but insert children from original
+- copy.deepcopy: deep copy. copy the parent and the children (recursively)
+- to customize behavior, classes can implement __copy__ or __deepcopy__
+- or __setstate__, __getstate__ can be implemented to specify what to copy
+
+Name mangling
+- Any method or variable with two leading underscores (and at most one trailing 
+underscore) is converted into _classname__variable/method so it cannot be 
+accessed using its original name.
+
+New style classes
+- Inherit from object when defining a class to get new style classes.
+- New style classes unify types and classes.
+
+Multiple inheritance
+- Allowed, looks for method/attribute in the parents from left to right
+- Does depth first search in each parent
+
+Complexity
+- https://wiki.python.org/moin/TimeComplexity
+- Accessing length (of all builtin types) is O(1)
+- List
+-- Append item O(1) [worst case O(n), when list needs to be extended]
+-- Insert item O(n)
+
+DATA STRUCTURES
+================
+
+Tree: no cycles and connected
+
+Binary search tree
+- All values in left subtree are smaller, all values in right subtree are greater.
+- Lookup, deletion and insertion are O(logn) (worst case: O(n)) 
+
+Heap
+- Usually binary trees where children are smaller [greater], max-heap [min-heap]
+- Complete binary tree (totally filled other than the rightmost elements on the
+  last level)
+- Find maximum (minimum) O(1)
+- Insert, delete O(logn), lookup O(n)
+-- Insert: place new element at the rightmost empty spot on the last level,
+   keep switching it with its parent until it is larger [smaller] than its 
+   parent
+-- Extract minimum (maximum): Remove root node, swap rightmost node on last 
+   level with the root and swap this node with its children until it is smaller 
+   (larger) than its children 
+
+Trie (prefix tree)
+- n-ary tree where characters are stored at each node.
+- each path down the tree is a word
+- enables efficient checking of whether a string is a prefix of a valid word
+-- this operation is O(K) where K is the length of the string
+
+Traversals
+- Preorder: node, left child, right child
+- Inorder: left child, node, right child
+- Postorder: left child, right child, node
+
+Graphs
+- adjacency list representation: each node has a list of its neighbors
+- adjacency matrix representations: n by n matrix where i, j denotes the edge
+between node i and node j.
+- bidirectional search: used to find shortest paths between nodes. 
+-- start breadth first search from source and destination nodes, stop when they 
+   collide
+-- significantly faster than using a single breadth first search
+-- breadth first: O(k^d), bidirectional: O(k^(d/2)), where k: branching factor,
+   d: distance between source and destination 
+
+Minimum spanning tree
+- Kruskal's algorithm
+-- Add edge with minimum weight if it does not create a cycle
+-- O(|E|log|E|) time complexity
+- Prim's algorithm
+-- Start from a random vertex, add edge with minimum weight that connects to
+a vertex not yet in the tree
+
+Shortest path
+- Dijkstra's algorithm
+-- Works only for positive weights
+- Floyd-Warshall algorithm
+-- More general, works for both positive and negative weights
+-- Closely related to max-product algorithm for graphical models
+
+Arrays
+- Lookup O(1), Search O(n)
+- Insert/Delete O(n)
+
+SORTING
+=======
+
+Factors to consider
+- Dataset size.
+-- Fits in memory?
+- In-place or needs extra space?
+- Stable?
+
+Comparison sort: Only operation we need is comparing items. Most sorting 
+algorithms are of this type. 
+- Best worst-case time is O(nlogn) for comparison sort.
+-- Note there are n! permutations and we need at least log2(n!) comparisons to
+pick one of them uniquely.
+
+Selection sort
+--------------
+Algorithm:
+For i=1:len(list) 
+        Find minimum of list[i:len(n)] and swap it with element i.
+- Best, average, worst case: O(n^2)
+- In-place
+- NOT stable
+
+Insertion sort
+--------------
+Algorithm:
+For i=1:len(list):
+    Find the place of element i in the sorted list list[0:i]
+    And insert it into its right position
+- Best case O(n), average, worst case O(n^2)
+- In-place
+- Stable
+
+Quick sort
+----------
+Algorithm:
+Choose pivot
+Form list1 from elements < pivot
+Form list2 from elements > pivot
+Return quicksort(list1) + [pivot] + quicksort(list2)
+- Best, average case O(nlogn), worst case O(n^2)
+- Usually NOT in-place
+- Usually NOT stable
+
+Merge sort
+----------
+Algorithm:
+Split list into two lists: list1 and list2
+Merge mergesort(list1) and mergesort(list2)
+- Best, average, worst case O(nlogn)
+- Usually NOT in place, O(n) memory
+- Usually stable
+
+
+Counting sort
+-------------
+Example of a sort algorithm that is NOT a comparison sort. Assumes
+keys are integers and counts how many items there are for each key. Then one can
+calculate the position of an item in the sorted list and form the sorted list.
+This algorithm is O(n).
+
+Radix sort
+----------
+Sort digit by digit (starting either from least significant or most significant).
+If we use an O(n) sorting algorithm (e.g., counting or bucket sort), complexity
+is O(wn) where w is the number of digits in the elements to be sorted.
+
+External sort
+-------------
+Sorting algorithm for data that do not fit into main memory. One technique is
+based on merge-sort and first splits the data into chunks that fit into memory,
+sorts each chunk, writes back to disk, then merges these chunks. To merge, we 
+read only a fraction of each chunk, merge them in a write buffer and write the 
+sorted data to disk whenever the buffer is full.
+
+BIT MANIPULATIONS
+=================
+Two's complement notation. Makes adding easy.
+- Positive numbers are the same
+- For negative numbers, take the positive, flip all bits, and add 1.
+- e.g., To get the number for -7.
+-- Get 7: 00000111
+-- Flip all bits: 11111000
+-- Add 1: 11111001
+
+Shift operators in C respect sign. Right shift >> fills the empty bits with 0 or
+1 depending on the sign.
+
+Big-endian: Most significant bit is stored first.
+Little-endian: Least significant bit is stored first.
+
+GRAPHICAL MODELS
+================
+
+Hammersley-Clifford theorem: Given a Markov network (i.e., undirected graph), 
+the corresponding distribution is defined as the product of potentials over
+maximal cliques. 
+- Given a graph G, the factorization over cliques satisfy all the independence
+relations implied by the graph.
+- Given a factorization, the graph with cliques for each potential implies the
+independence relations.
+
+For a tree-structured graph, inference is linear in the number of variables.
+
+For computing marginals: sum-product algorithm
+For finding most likely state: max-product algorithm
+- However, there is no efficient algorithm for mixed inference, e.g., 
+max_x sum_y p(x,y)
+ 
+
+OTHER
+=====
+
+Any recursive algorithm can be implemented without recursion.
+- Good example: lambda-calculus and Turing machine are equivalent.
+- The easiest way is to use a stack to imitate the call stack.
+
+Tail recursion: when the recursive call is the last operation in a function
+- Does not require a new stack; the old one can be used.
+
+Knuth-Yao algorithm for generating biased coin flips from a fair coin
+Write p in binary = 0.p1p2p3...
+i = 0
+do
+i = i + 1
+Generate random bit b_i
+    until b_i != p_i
+if b_i < p_i, return 1
+else return 0
+   
+PROBLEMS
+========
+- Counting trees with a given depth
+- Backpropagation
+- Message passing
+- Dijkstra's algorithm
+- Google PageRank
+- MCMC
+-- Ergodicity etc.
+- OOP in python.
+
+
