@@ -1,0 +1,1 @@
+This repository contains the solutions to some of the problems in books ``Programming Interviews Exposed'' and ``Cracking the Coding Interview''. These were implemented as preparation for the technical interviews common at companies like Google, Microsoft, and Facebook.
